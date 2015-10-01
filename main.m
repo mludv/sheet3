@@ -14,6 +14,15 @@ train_data(:,2) = (train_data(:,2)-my(2))./sigma(2);
 valid_data(:,1) = (valid_data(:,1)-my(1))./sigma(1);
 valid_data(:,2) = (valid_data(:,2)-my(2))./sigma(2);
 
+%% Plot validation data
+A = valid_data(:,3) == 1;
+B = valid_data(:,3) == -1;
+clf
+hold on
+scatter(valid_data(A, 1), valid_data(A,2));
+scatter(valid_data(B, 1), valid_data(B,2));
+xlim([-3, 1.5])
+
 %% Plot training data
 A = train_data(:,3) == 1;
 B = train_data(:,3) == -1;
@@ -23,14 +32,6 @@ scatter(train_data(A, 1), train_data(A,2));
 scatter(train_data(B, 1), train_data(B,2));
 hold off
 
-%% Plot validation data
-A = valid_data(:,3) == 1;
-B = valid_data(:,3) == -1;
-clf
-hold on
-scatter(valid_data(A, 1), valid_data(A,2));
-scatter(valid_data(B, 1), valid_data(B,2));
-xlim([-3, 1.5])
 
 %% 2a)
 
@@ -85,7 +86,7 @@ for i = 1:tmax
     % calculate error for output layer
     output = V{M}(1:end-1); % remove the last "-1"
     error = cell(M,1);
-    error{M} = dg(b)*(real_output-output);
+    error{M} = dg(w{M-1}*V{M-1})*(real_output-output);
     
     % calculate errors for hidden layers
     for m = M:-1:3
@@ -110,7 +111,7 @@ end
     
 %% Plot weights
 t = linspace(-3, 1.5);
-y = -w{M-1}(1)/w{M-1}(2)*t - w{M-1}(3)/w{M-1}(2);
+y = -w{M-1}(1)/w{M-1}(2)*t + w{M-1}(3)/w{M-1}(2);
 
 hold on
 plot(t, y)
